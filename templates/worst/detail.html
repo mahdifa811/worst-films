@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class= "col-6 offset-3">
+<ul class="list-group">
+{% if wfilm.poster %}
+<li class= "list-group-item"><img src= "{{ wfilm.poster.url }}"> </li><br>
+{% endif %}
+<li class= "list-group-item"><strong> name:</strong> {{ wfilm.title }}</li><br>
+<li class= "list-group-item"><strong> director:</strong> {{ wfilm.director }}</li><br>
+<li class= "list-group-item"><strong> country:</strong> {{ wfilm.country }}</li><br>
+<li class= "list-group-item"><strong> release year:</strong> {{ wfilm.release_year }}</li><br>
+<li class= "list-group-item"><strong> rate: </strong> {{ wfilm.rate }}</li><br>
+<li class= "list-group-item"><strong> review: </strong> <p class= "text-break"> {{ wfilm.review }}</p></li><br>
+<li class= "list-group-item"><strong> published date: </strong> {{ wfilm.published_date }}</li><br>
+<li class = "list-group-item font-weight-light font-italic d-inline border-right-0"><strong>author: </strong> {{wfilm.author}}</li><br>
+
+{% if request.user == wfilm.author %}
+    <a class= "text-decoration-none text-white mx-2 d-inline-block" href= "{% url 'worstFilms:edit' wfilm.id %}"><button type= "button" class= "btn btn-warning btn-sm col-md-2">Edit</button><a>
+    <a class= "text-decoration-none text-white mx-2 d-inline-block" href= "{% url 'worstFilms:delete' wfilm.id %}"><button type= "button" class= "btn btn-danger btn-sm col-md-2">Delete</button><a><br>
+
+{% endif %}
+
+</ul>
+{% if user.is_authenticated %}
+    <a href="{% url 'worstFilms:like_film' wfilm.id %}" class="btn btn-primary {% if can_like %}disabled {% endif %} col-2 float-right">Like {{ wfilm.count_likes }} </a>
+{% endif %}<br><hr><hr>
+    {% if user.is_authenticated %}
+    <form method="POST" novalidate>
+        <p>by: <strong>{{request.user}}<strong></p>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-success" type="submit" value="Send">
+    </form><br><br><hr>
+    {% else %}
+        <p>for commenting, please log in</p>
+    {% endif %}
+    <h4 class= "text-dark"> Comments:</h4><br>
+    {% with total=comments.count %}
+        <p>This post have {{ total }} comment{{total|pluralize}}</p><br>
+    {% endwith %}
+    {% for comment in comments %}
+        <div class= "card bg-dark text-light">
+            <p class= "card-header">{{ comment.user }}</p>
+            <p class= "card-body">{{ comment.body }}</p>
+            {% if user.is_authenticated %}
+            <div class="card-body">
+            <form action="{% url 'worstFilms:reply' wfilm.id comment.id %}" method='POST'>
+                {% csrf_token %}
+                {{ reply_form.as_p }}
+                <input type="submit" value="Send" class="btn btn-primary col-2">
+                </form>
+            {% endif %}
+            </div>
+            {% for reply in comment.rcomment.all %}
+                <p class="p-3 m-3 bg-secondary text-white"> {{ reply.user }}<br> {{ reply.body }} </p>
+            {% endfor %}
+        </div><br>
+
+    {% empty %}
+        <p>There is not comment</p>
+        
+
+    {% endfor %}
+</div>
+{% endblock %}

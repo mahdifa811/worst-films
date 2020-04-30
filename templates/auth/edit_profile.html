@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} {{user.username}} profile edit{% endblock title %}
+
+{% block content %}
+{% if request.user == user %}
+<h4>{{user.username}} profile edit </h4>
+    <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="submit">
+    </form>
+    
+{% else %}
+    <h5>sorry! you can't access to this page.</h5>
+{% endif %}
+{% endblock content %}

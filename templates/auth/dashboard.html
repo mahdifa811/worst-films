@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{ user.username }}-profile {% endblock title %}
+
+{% block js_files %}
+<script src="{% static 'account/js/script.js' %}"> </script>
+{% endblock js_files %}
+
+{% block content %}
+
+<div class="bg-light">
+<h2>{{ user.username }} profile</h2><br>
+{% if request.user == user %}
+<a href="{% url 'account:edit_profile' user.id %} " class="float-right">Edit profile</a>
+{% endif %}
+{% if request.user.id != user.id and not is_relation %}
+    <button id="following_btn" data-id="{{ user.id }}" class="float-right btn btn-primary">follow</button>
+{% elif requset.user.id != user.id and is_relation %}
+    <button id="following_btn" data-id="{{ user.id }}" class="float-right btn btn-warning">unfollow</button>
+{% endif %}
+
+<p>age: <h5>{{ user.profile.age }}</h5></p>
+<p>bio:<br> <h5>{{ user.profile.bio }}</h5></p>
+</div>
+<div class="offset-2">
+    {% for film in films %}
+          <ul class= "col-5 list-group d-inline-block mt-4">
+      {% if film.poster %}
+      <li class= "list-group-item border-bottom-0"><img class= "w-100" src= "{{ film.poster.url }}" alt= "{{ film.title }}"> </li>
+      {% endif %}
+      <li class= "list-group-item border-bottom-0 "><strong> name: </strong>{{film.title}}</li>
+      <li class = "list-group-item border-bottom-0 "><strong> director:</strong> {{film.director}}</li>
+      <li class = "text-truncate list-group-item border-bottom-0 "><strong> review:</strong><br> {{film.review}}</li>
+      <li class = " list-group-item border-bottom-0 "><strong> rate:</strong> {{film.rate}}</li>
+      <li class = "list-group-item font-weight-light font-italic d-inline border-right-0"><strong> </strong> {{ film.published_date|timesince }} before</li><br><br>
+      <a class= "text-decoration-none text-white float-right mx-2 d-inline-block" href= "{% url 'worstFilms:detail' film.id %}"><button type= "button" class= "btn btn-primary btn-sm">Detail</button><a><br><br>
+
+      </ul>
+
+    {% endfor %}
+</div>
+{% endblock content %}

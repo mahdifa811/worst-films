@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% if request.user == film.author %}
+<br>
+<br>
+<h1 class= "offset-3"> Edit your post </h1>
+<br>
+<br>
+<div class= "col-5 offset-3 ">
+  <h3 class= "text-danger">{{ error }}<h3>
+  <form method= "POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class= "btn btn-primary" type= "submit">Edit</button>
+  </form>
+<br><br>
+{% else %}
+<h2>You don't allow to edit this post</h2>
+{% endif %}
+
+{% endblock content %}
