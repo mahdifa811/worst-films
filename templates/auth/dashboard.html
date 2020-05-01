@@ -22,6 +22,10 @@
 
 <p>age: <h5>{{ user.profile.age }}</h5></p>
 <p>bio:<br> <h5>{{ user.profile.bio }}</h5></p>
+
+<a href="{% url 'account:followings' user.id %}" class="float-right mx-3">followings</a>
+<a href="{% url 'account:followers' user.id %}" class="float-right">followers</a>
+
 </div>
 <div class="offset-2">
     {% for film in films %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% for relation in relations %}
+        <a href="{% url 'account:dashboard' relation.to_user.id %}"> {{ relation.to_user }}</a><br>
+    {% endfor %}
+
+{% endblock content %}

@@ -102,5 +102,15 @@ def unfollow(request):
         else:
             return JsonResponse({'status':'notexists'})
 
+@login_required
+def followings(request, user_id):
+    relations = Relation.objects.filter(from_user__id=user_id)
+    return render(request, 'auth/followings.html',{'relations':relations})
+
+@login_required
+def followers(request, user_id):
+    relations = Relation.objects.filter(to_user__id=user_id)
+    return render(request, 'auth/followers.html', {'relations':relations})
+
 
 
