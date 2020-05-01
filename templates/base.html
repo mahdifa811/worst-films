@@ -28,6 +28,10 @@
       <li class="nav-item active">
         <a class="nav-link text-light" href="{% url 'about' %}"> About<span class="sr-only">(current)</span></a>
       </li>      
+      <li class="nav-item active">
+        <a class="nav-link text-light" href="{% url 'home' %}"> All posts<span class="sr-only">(current)</span></a>
+      </li>      
+
       {% if user.is_authenticated %}
       <li class="nav-item active">
         <a class="nav-link text-light" href="{% url 'account:dashboard' request.user.id %}"> dashboard<span class="sr-only">(current)</span></a>

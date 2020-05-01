@@ -5,11 +5,9 @@ from .forms import FilmForm, CommentForm, ReplyForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
+from account.models import Relation
 
 def home(request):
-    return redirect('worstFilms:home')
-
-def home_page(request):
     film = Film.objects.all().order_by('-published_date')
     query = request.GET.get('q')
     if query:
@@ -19,12 +17,32 @@ def home_page(request):
             Q(country__icontains=query)|
             Q(release_year__icontains=query)|
             Q(review__icontains=query)
-            #Q(author__icontains=query)
         ).distinct()
     context = {
-        'film' : film
+        'film' : film,
     }
     return render(request , 'worst/home.html', context)
+
+def home_page(request):
+    film = Film.objects.all().order_by('-published_date')
+    relations = Relation.objects.filter(from_user=request.user)
+    film_following= []
+    for relation in relations:
+        film_following += Film.objects.filter(author=relation.to_user).order_by('-published_date')
+
+    query = request.GET.get('q')
+    if query:
+        film_following= film.filter(
+            Q(title__icontains=query)|
+            Q(director__icontains=query)|
+            Q(country__icontains=query)|
+            Q(release_year__icontains=query)|
+            Q(review__icontains=query)
+        ).distinct()
+    context = {
+        'film_following': film_following
+    }
+    return render(request , 'worst/home_page.html', context)
 
 @login_required
 def create_worst(request):
@@ -95,6 +113,7 @@ def detail_worst(request , id):
         'can_like': can_like
         }
     return render(request, 'worst/detail.html', context)
+
 @login_required
 def reply_worst(request, film_id, comment_id):
     film = get_object_or_404(Film, id=film_id)

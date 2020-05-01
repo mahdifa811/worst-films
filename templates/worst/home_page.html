@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block search %}
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" name= "q" value= "{{ request.GET.q }}" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success bg-light  my-2 my-sm-0" type="submit">Search</button>
+    </form>
+{% endblock %}
+
+{% block content %}
+
+<div class= "col-10 offset-2">
+{% if request.user.is_authenticated %}
+  {% for f_user in film_following %}
+    <ul class= "col-5 list-group d-inline-block mt-4">
+      {% if f_user.poster %}
+      <li class= "list-group-item border-bottom-0"><img class= "w-100" src= "{{ f_user.poster.url }}" alt= "{{ f_user.title }}"> </li>
+      {% endif %}
+      <li class= "list-group-item border-bottom-0 "><strong> name: </strong>{{f_user.title}}</li>
+      <li class = "list-group-item border-bottom-0 "><strong> director:</strong> {{f_user.director}}</li>
+      <li class = "text-truncate list-group-item border-bottom-0 "><strong> review:</strong><br> {{f_user.review}}</li>
+      <li class = " list-group-item border-bottom-0 "><strong> rate:</strong> {{f_user.rate}}</li>
+      <li class = "list-group-item font-weight-light font-italic d-inline border-right-0"><strong> </strong> {{ f_user.published_date|timesince }} before</li><br><br>
+      <li class = "list-group-item font-weight-light font-italic d-inline border-right-0"><strong>author: </strong><a href="{% url 'account:dashboard' f_user.author.id %}"> {{f_user.author}}</a></li><br>
+
+      <a class= "text-decoration-none text-white float-right mx-2 d-inline-block" href= "{% url 'worstFilms:detail' f_user.id %}"><button type= "button" class= "btn btn-primary btn-sm">Detail</button><a><br><br>
+
+    </ul>
+
+  {% endfor %}
+{% endif %}
+</div>
+
+{% endblock  %}
